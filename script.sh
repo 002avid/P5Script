@@ -8,6 +8,9 @@ XML_ALMACENAMIENTO="/etc/libvirt/qemu/networks/Almacenamiento.xml"
 VM_NAME="mvp5"
 VM_USER="root"  # <-- Cambia esto si el usuario SSH no es root
 
+xml="/home/usuario/p5/mvp5.xml"
+
+
 # Función para mostrar errores
 error() {
     echo "ERROR: $1"
@@ -111,6 +114,7 @@ echo "✅ Red 'Almacenamiento' verificada correctamente."
 #############################
 echo "== Comprobación de conectividad =="
 
+# HAY QUE CHECKEAR ESTO
 check_ping() {
     destino=$1
     interfaz=$2
@@ -129,6 +133,8 @@ check_ping() {
         echo "✅ Éxito: Respuesta de $descripcion"
     fi
 }
+# HAY QUE CHECKEAR ESTO
+
 
 check_ping mvp5i1.vpd.com "" "mvp5i1.vpd.com"
 check_ping www.google.com enp1s0 "www.google.com desde mvp5i1.vpd.com"
@@ -156,7 +162,6 @@ EOF
 #############################
 # COMPROBACIÓN XML DE VM
 #############################
-xml="/home/usuario/p5/mvp5.xml"
 
 grep -q "<source network='Cluster'" "$xml" && echo "✅ Conectado a red Cluster" || echo "❌ No conectado a red Cluster"
 grep -q "<source network='Almacenamiento'" "$xml" && echo "✅ Conectado a red Almacenamiento" || echo "❌ No conectado a red Almacenamiento"
