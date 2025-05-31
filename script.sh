@@ -24,6 +24,14 @@ else
     echo "[ERROR] El servicio sshd NO está activo."
 fi
 
+
+#########################
+# SSH PARA ANFITRIONES
+#########################
+
+
+
+
 #######################
 # VERIFICACIÓN CLUSTER
 #######################

@@ -1,0 +1,172 @@
+TRABAJO OPTATIVO PRÁCTICA 5 
+
+REDES: 
+
+ 
+
+REQUISITOS Cluster: 
+
+Nombre: Cluster 
+
+Tipo: NAT 
+
+Rango direcciones: 192.168.140.0/24 
+
+DHCP activo 192.168.140.2-192.168.140.149 
+
+Autoarranque 
+
+ORDENES Cluster: 
+
+Nombre:	 
+
+cat /etc/libvirt/qemu/networks/Cluster.xml | tr -s ' ' | grep "<name>" | cut -c 8-14 
+
+  
+
+Tipo: 
+
+cat /etc/libvirt/qemu/networks/Cluster.xml | tr -s ' ' | grep "<forward mode=" | cut -c 17-19 
+
+  
+
+Rango direcciones: 
+
+cat /etc/libvirt/qemu/networks/Cluster.xml | tr -s ' ' | grep "<ip address=" | cut -c 15-27 
+
+ cat /etc/libvirt/qemu/networks/Cluster.xml | tr -s ' ' | grep "netmask=" | cut -c 39-51 
+
+DHCP: 
+
+cat /etc/libvirt/qemu/networks/Cluster.xml | tr -s ' ' | grep "<range start=" | cut -c 16-29 
+
+  
+
+cat /etc/libvirt/qemu/networks/Cluster.xml | tr -s ' ' | grep "<range start=" | cut -c 36-50 
+
+  
+
+Autoarranque: 
+
+virsh net-info Cluster | tr -s ' ' | grep "Autoinicio" | cut -c 13-14 
+
+--------------------------------------------------------- 
+
+ 
+
+-	REQUISITOS Almacenamiento: 
+
+Nombre: Almacenamiento 
+
+Tipo: aislada 
+
+Rango direcciones: 10.22.122.1 
+
+DHCP activo 192.168.140.2-192.168.140.149 
+
+Autoarranque 
+
+ 
+-	ORDENES Almacenamiento: 
+
+Nombre: 
+
+cat /etc/libvirt/qemu/networks/Almacenamiento.xml | tr -s ' ' | grep "<name>" | cut -c 8-21 
+ 
+
+Tipo: 
+
+cat /etc/libvirt/qemu/networks/Almacenamiento.xml | tr -s ' ' | grep "<forward mode=" | cut -c 17-20 
+
+La de arriba debe ser none 
+
+O directamente no existir ese apartado 
+
+ 
+
+Rango direcciones: 
+
+cat /etc/libvirt/qemu/networks/Almacenamiento.xml | tr -s ' ' | grep "<ip address=" | cut -c 15-25 
+
+cat /etc/libvirt/qemu/networks/Almacenamiento.xml | tr -s ' ' | grep "netmask=" | cut -c 37-49 
+
+ 
+
+DHCP no activo: 
+cat /etc/libvirt/qemu/networks/Almacenamiento.xml | tr -s ' ' | grep "<dhcp>" 
+No debe existir ningun apartado con eso 
+
+ 
+
+Autoarranque: 
+
+virsh net-info Almacenamiento | tr -s ' ' | grep "Autoinicio" | cut -c 13-14 
+
+ 
+
+INTERFAZ BRIDGE: 
+
+ 
+
+-	REQUISITOS bridge0: 
+
+Existir la red virtual en el anfitrion 
+
+Existir la interfaz enp0s8 en mvp5 
+
+Conexion  
+
+ 
+
+-	ORDENES bridge0: 
+
+ip -j a | jq -r '.[] | select(.ifname=="bridge0") | .addr_info[] | select(.family=="inet") | .local' | cut -c 1-10 
+
+La orden anterior da la ip del bridge0 pero solo la parte de 10.140.92., lo cual confirma que existe el puente y gestiona el tema de que cada uno tenga un final de la ip diferente. 
+
+ 
+
+ip a show enp8s0 | grep “inet ”  | awk “{print \$2}” | cut –d/ -f1 | cut –c 1-10 
+
+Tras hacer ssh, la orden anterior debería de servir para hallar la ip de la interfaz de red bridge0 desde el anfitrion (tecnicamente) 
+
+ 
+
+Usando los pings que tenemos codificados en el script, se puede comprobar que la MV tiene conexión con el exterior, y que el anfitrión tiene conexión con la máquina. 
+
+ 
+
+MAQUINA VIRTUAL mvp5 
+
+ 
+
+Requisitos: 
+
+Hacer 2 pings a google con la opcion –I para comprobar la conexion hacia afuera con mvp5i1.vpd.com y mvp5i3.vpd.com 
+
+ 
+
+En mvp5i2, hacer ping 10.22.122.1 -I (la interfaz de red), ya que al contrario de las demás que van por google, esta usa esa ip. 
+
+ 
+
+Hacer para comprobar que la ip del clúster está dentro del rango dhcp establecido 
+
+ 
+
+Hacer que se pueda ejecutar el script en otro sistema anfitrion 
+
+ 
+
+Hacer que se enciendan las maquinas antes de empezar el script 
+
+
+
+
+
+
+
+
+Archivo XML de mvp5 
+
+ 
