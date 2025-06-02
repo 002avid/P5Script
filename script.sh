@@ -42,35 +42,35 @@ echo "== Comprobando red: Cluster =="
 echo "✅ Éxito: Red Cluster existe."
 
 # Nombre de red
-nombre_cluster=$(grep -oPm1 "(?<=<name>)[^<]+" "$XML_CLUSTER")
+nombre_cluster=$(cat  "$XML_CLUSTER"  |  tr  -s  ' '  |  grep  "<name>"  |  cut  -c  8-14)
 [ "$nombre_cluster" == "Cluster" ] || error "Nombre de red Cluster incorrecto: $nombre_cluster"
 echo "✅ Éxito: Nombre de red Cluster correcto."
 
 # Tipo de red
-tipo_cluster=$(grep -oPm1 '(?<=<forward mode=")[^"]+' "$XML_CLUSTER")
+tipo_cluster=$(cat  "$XML_CLUSTER"  |  tr  -s  ' '  |  grep  "<forward mode="  |  cut  -c  17-19)
 [ "$tipo_cluster" == "nat" ] || error "Tipo de red Cluster incorrecto: $tipo_cluster"
 echo "✅ Éxito: Tipo de red Cluster correcto."
 
 # IP base
-ip_cluster=$(grep -oPm1 '(?<=<ip address=")[^"]+' "$XML_CLUSTER")
+ip_cluster=$(cat  "$XML_CLUSTER"  |  tr  -s  ' '  |  grep  "<ip address="  |  cut  -c  15-27)
 [ "$ip_cluster" == "192.168.140.1" ] || error "IP base de Cluster incorrecta: $ip_cluster"
 echo "✅ Éxito: IP de Cluster correcta."
 
 # Máscara de red
-netmask_cluster=$(grep -oPm1 '(?<=netmask=")[^"]+' "$XML_CLUSTER")
+netmask_cluster=$(cat  "$XML_CLUSTER"  |  tr  -s  ' '  |  grep  "netmask="  |  cut  -c  39-51)
 [ "$netmask_cluster" == "255.255.255.0" ] || error "Máscara de red de Cluster incorrecta: $netmask_cluster"
 echo "✅ Éxito: Máscara de red de Cluster correcta."
 
 # Rango DHCP
-dhcp_start_cluster=$(grep -oPm1 '(?<=<range start=")[^"]+' "$XML_CLUSTER")
-dhcp_end_cluster=$(grep -oPm1 '(?<=end=")[^"]+' "$XML_CLUSTER")
+dhcp_start_cluster=$(cat  "$XML_CLUSTER"  |  tr  -s  ' '  |  grep  "<range start="  |  cut  -c  16-28)
+dhcp_end_cluster=$(cat  "$XML_CLUSTER"  |  tr  -s  ' '  |  grep  "<range start="  |  cut  -c  36-50)
 [ "$dhcp_start_cluster" == "192.168.140.2" ] || error "Inicio de DHCP incorrecto: $dhcp_start_cluster"
 [ "$dhcp_end_cluster" == "192.168.140.149" ] || error "Fin de DHCP incorrecto: $dhcp_end_cluster"
 echo "✅ Éxito: DHCP de Cluster correcto."
 
 # Autoarranque
-autoinicio_cluster=$(virsh net-info Cluster 2>/dev/null | grep -i "Autoinicio" | awk '{print $2}')
-[ "$autoinicio_cluster" == "sí" ] || error "La red Cluster no tiene autoarranque activado"
+autoinicio_cluster=$(virsh  net-info  Cluster  2>/dev/null  |  tr  -s  ' '  |  grep  "Autoinicio"  |  cut  -c  13-14)
+[ "$autoinicio_cluster" == "si" ] || error "La red Cluster no tiene autoarranque activado"
 echo "✅ Éxito: Autoarranque de Cluster correcto."
 
 echo "✅ Red 'Cluster' verificada correctamente."
