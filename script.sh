@@ -8,12 +8,14 @@ XML_ALMACENAMIENTO="/etc/libvirt/qemu/networks/Almacenamiento.xml"
 VM_NAME="mvp5"
 VM_USER="root"  # <-- Cambia esto si el usuario SSH no es root
 
-xml="/home/usuario/p5/mvp5.xml"
-
+xml="/etc/libvirt/qemu/mvp5.xml"
+virsh start mvp5
+sleep 30
 
 # Función para mostrar errores
 error() {
     echo "ERROR: $1"
+    virsh shutdown mvp5
     exit 1
 }
 
@@ -78,9 +80,7 @@ echo "✅ Red 'Cluster' verificada correctamente."
 #############################
 # VERIFICACIÓN ALMACENAMIENTO
 #############################
-#############################
-# VERIFICACIÓN ALMACENAMIENTO
-#############################
+
 echo "== Comprobando red: Almacenamiento =="
 
 # Comprobar existencia del XML
@@ -147,26 +147,57 @@ check_ping() {
 }
 # HAY QUE CHECKEAR ESTO
 check_ping mvp5i1.vpd.com "" "mvp5i1.vpd.com"
+check_ping mvp5i2.vpd.com "" "mvp5i2.vpd.com"
+check_ping mvp5i3.vpd.com "" "mvp5i3.vpd.com"
 
 #############################
 # VERIFICACIÓN VM CON VIRSH
 #############################
 VM_IP=$(virsh domifaddr "$VM_NAME" | awk '/ipv4/ {split($4, a, "/"); print a[1]}')
 [ -n "$VM_IP" ] || error "No se pudo obtener la IP de la máquina virtual $VM_NAME"
-echo "IP de la VM $VM_NAME: $VM_IP"
-
 ssh ${VM_USER}@${VM_IP} << 'EOF'
+
+
+# Función para mostrar errores
+error() {
+    echo "ERROR: $1"
+    virsh shutdown mvp5
+    exit 1
+}
+
+
+
+check_ping() {
+    destino=$1
+    interfaz=$2
+    descripcion=$3
+    echo "Comprobando conexion de la máquina mvp5 de $3..."
+    if [ -n "$interfaz" ]; then
+        salida_ping=$(ping -c 1 -W 1 -I "$interfaz" "$destino" 2>/dev/null)
+    else
+        salida_ping=$(ping -c 1 -W 1 "$destino" 2>/dev/null)
+    fi
+
+    if echo "$salida_ping" | grep -q "1 received" && ! echo "$salida_ping" | grep -qi "error";  then
+        echo "✅ Éxito: Respuesta de $descripcion"
+    else
+        error "No se ha recibido respuesta de $descripcion"
+    fi
+}
+
+
+
 echo "Comprobando conexión dentro de la VM..."
 IP_PREFIX=$(ip a show enp8s0 | grep 'inet ' | awk '{print $2}' | cut -d/ -f1 | cut -c 1-10)
-if [ "$IP_PREFIX" = "10.192.140." ]; then
+if [ "$IP_PREFIX" = "10.140.92." ]; then
   echo "[OK] La interfaz enp8s0 tiene una IP asignada."
 else
   echo "ERROR: La interfaz enp8s0 NO tiene IP."
 fi
 
-check_ping www.google.com enp1s0 "www.google.com desde mvp5i1.vpd.com"
-check_ping www.google.com enp8s0 "www.google.com desde mvp5i3.vpd.com"
+check_ping google.es enp1s0 "google.es desde mvp5i1.vpd.com"
 check_ping 10.22.122.1 enp7s0 "10.22.122.1 desde mvp5i2.vpd.com"
+check_ping google.es enp8s0 "google.es desde mvp5i3.vpd.com"
 
 echo "Fin de comprobaciones."
 EOF
@@ -175,14 +206,16 @@ EOF
 # COMPROBACIÓN XML DE VM
 #############################
 
-grep -q "<source network='Cluster'" "$xml" && echo "✅ Conectado a red Cluster" || echo "❌ No conectado a red Cluster"
-grep -q "<source network='Almacenamiento'" "$xml" && echo "✅ Conectado a red Almacenamiento" || echo "❌ No conectado a red Almacenamiento"
+grep -q "<source network='Cluster'" "$xml" && echo "✅ Conectado a red Cluster" || echo "❌ La máquina mvp5 no esta conectada a red Cluster"
+grep -q "<source network='Almacenamiento'" "$xml" && echo "✅ Conectado a red Almacenamiento" || error "❌ La máquina mvp5 no esta conectada a red Almacenamiento"
 
 if grep -q "<source bridge='bridge0'" "$xml"; then
     echo "✅ Conectado a bridge bridge0"
 elif grep -q "<source bridge=" "$xml"; then
-    echo "❌ Nombre erróneo del bridge (debería ser bridge0)"
-    exit 1
+    error "Nombre erróneo del bridge"
 else
-    echo "❌ No conectado a bridge bridge0"
+    error "No conectado a bridge bridge0"
 fi
+
+virsh shutdown mvp5
+exit 0
