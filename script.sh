@@ -3,15 +3,12 @@
 # Rutas a los archivos XML
 XML_CLUSTER="/etc/libvirt/qemu/networks/Cluster.xml"
 XML_ALMACENAMIENTO="/etc/libvirt/qemu/networks/Almacenamiento.xml"
-
 # Nombre de la VM y usuario SSH
 VM_NAME="mvp5"
 VM_USER="root"  # <-- Cambia esto si el usuario SSH no es root
 
 xml="/etc/libvirt/qemu/mvp5.xml"
-virsh start mvp5
-echo "Iniciando la máquina virtual 'mvp5', por favor, espere 40 segundos..."
-sleep 40
+
 
 # Función para mostrar errores
 error() {
@@ -20,24 +17,15 @@ error() {
     exit 1
 }
 
-# Comprobación del servicio sshd
-if systemctl is-active --quiet sshd; then
-    echo "[OK] El servicio sshd está activo."
-else
-    echo "[ERROR] El servicio sshd NO está activo."
-fi
-
-
-#########################
-# SSH PARA ANFITRIONES
-#########################
-
-
-
 
 #######################
 # VERIFICACIÓN CLUSTER
 #######################
+
+verificar_redes_y_vm() {
+virsh start mvp5
+sleep 40
+
 echo "== Comprobando red: Cluster =="
 
 # Comprobar existencia del XML
@@ -78,10 +66,10 @@ echo "✅ Éxito: Autoarranque de Cluster correcto."
 
 echo "✅ Red 'Cluster' verificada correctamente."
 
+
 #############################
 # VERIFICACIÓN ALMACENAMIENTO
 #############################
-
 echo "== Comprobando red: Almacenamiento =="
 
 # Comprobar existencia del XML
@@ -121,6 +109,7 @@ autoinicio_almacen=$(virsh  net-info  Almacenamiento  2>/dev/null  |  tr  -s  ' 
 echo "✅ Éxito: Autoarranque de Almacenamiento correcto."
 
 echo "✅ Red 'Almacenamiento' verificada correctamente."
+
 
 #############################
 # VERIFICACIÓN DE CONECTIVIDAD
@@ -220,3 +209,37 @@ fi
 
 virsh shutdown mvp5
 exit 0
+}
+
+# === Lógica principal ===
+
+# Si el primer argumento es "local", ejecutar directamente
+if [ "$1" == "local" ]; then
+    shift
+    echo "✅ Ejecutando comprobaciones en anfitrión local (modo remoto 'local')..."
+    verificar_redes_y_vm
+    exit 0
+fi
+
+# Si se pasa una IP, ejecutar en remoto
+if [[ "$1" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    remote_host="$1"
+    echo "📡 Ejecutando comprobaciones en anfitrión remoto $remote_host..."
+
+    # Copiar el script al remoto
+    scp "$0" "$remote_host:/tmp/"
+    if [ $? -ne 0 ]; then
+        echo "[ERROR] No se pudo copiar el script al anfitrión remoto"
+        exit 1
+    fi
+
+    # Ejecutar el script en el remoto con el flag "local"
+    ssh "$remote_host" "bash /tmp/$(basename "$0") local"
+    exit 0
+fi
+
+# Si el argumento no es válido
+echo "[ERROR] Argumento no reconocido: '$1'"
+echo "Uso: $0 [IP_remota] | local"
+exit 1
+
