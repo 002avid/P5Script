@@ -24,6 +24,7 @@ error() {
 
 verificar_redes_y_vm() {
 virsh start mvp5
+echo "Iniciando la máquina virtual 'mvp5', por favor espere 40 segundos..."
 sleep 40
 
 echo "== Comprobando red: Cluster =="
@@ -242,4 +243,3 @@ fi
 echo "[ERROR] Argumento no reconocido: '$1'"
 echo "Uso: $0 [IP_remota] | local"
 exit 1
-
