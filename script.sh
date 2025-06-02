@@ -78,6 +78,9 @@ echo "✅ Red 'Cluster' verificada correctamente."
 #############################
 # VERIFICACIÓN ALMACENAMIENTO
 #############################
+#############################
+# VERIFICACIÓN ALMACENAMIENTO
+#############################
 echo "== Comprobando red: Almacenamiento =="
 
 # Comprobar existencia del XML
@@ -85,34 +88,35 @@ echo "== Comprobando red: Almacenamiento =="
 echo "✅ Éxito: Red Almacenamiento existe."
 
 # Nombre de red
-nombre_almacen=$(grep -oPm1 "(?<=<name>)[^<]+" "$XML_ALMACENAMIENTO")
+nombre_almacen=$(cat  "$XML_ALMACENAMIENTO"  |  tr  -s  ' '  |  grep  "<name>"  |  cut  -c  8-21)
 [ "$nombre_almacen" == "Almacenamiento" ] || error "Nombre de red Almacenamiento incorrecto: $nombre_almacen"
 echo "✅ Éxito: Nombre de red Almacenamiento correcto."
 
 # Tipo de red (debe ser none o no existir)
-tipo_almacen=$(grep -oPm1 '(?<=<forward mode=")[^"]+' "$XML_ALMACENAMIENTO")
+tipo_almacen=$(cat  "$XML_ALMACENAMIENTO"  |  tr  -s  ' '  |  grep  "<forward mode="  |  cut  -c  17-20)
 if grep -q "<forward mode=" "$XML_ALMACENAMIENTO" && [ "$tipo_almacen" != "none" ]; then
     error "Tipo de red Almacenamiento incorrecto: $tipo_almacen"
 fi
 echo "✅ Éxito: Tipo de red Almacenamiento correcto."
 
 # IP base
-ip_almacen=$(grep -oPm1 '(?<=<ip address=")[^"]+' "$XML_ALMACENAMIENTO")
+ip_almacen=$(cat  "$XML_ALMACENAMIENTO"  |  tr  -s  ' '  |  grep  "<ip address="  |  cut  -c  15-25)
 [ "$ip_almacen" == "10.22.122.1" ] || error "Dirección IP de Almacenamiento incorrecta: $ip_almacen"
 echo "✅ Éxito: IP de Almacenamiento correcta."
 
 # Máscara de red
-netmask_almacen=$(grep -oPm1 '(?<=netmask=")[^"]+' "$XML_ALMACENAMIENTO")
+netmask_almacen=$(cat  "$XML_ALMACENAMIENTO"  |  tr  -s  ' '  |  grep  "netmask="  |  cut  -c  37-49)
 [ "$netmask_almacen" == "255.255.255.0" ] || error "Máscara de red de Almacenamiento incorrecta: $netmask_almacen"
 echo "✅ Éxito: Máscara de red de Almacenamiento correcta."
 
 # No debe haber DHCP
-grep -q "<dhcp>" "$XML_ALMACENAMIENTO" && error "La red Almacenamiento NO debe tener DHCP activo"
+dhcp_almacen=$(cat  "$XML_ALMACENAMIENTO"  |  tr  -s  ' '  |  grep  "<dhcp>")
+[  -z  "$dhcp_almacen"  ]  ||  error  "La  red  Almacenamiento  no  debe  tener  DHCP  activo"
 echo "✅ Éxito: DHCP desactivado en Almacenamiento."
 
 # Autoarranque
-autoinicio_almacen=$(virsh net-info Almacenamiento 2>/dev/null | grep -i "Autoinicio" | awk '{print $2}')
-[ "$autoinicio_almacen" == "sí" ] || error "La red Almacenamiento no tiene autoarranque activado"
+autoinicio_almacen=$(virsh  net-info  Almacenamiento  2>/dev/null  |  tr  -s  ' '  |  grep  "Autoinicio"  |  cut  -c  13-14)
+[ "$autoinicio_almacen" == "si" ] || error "La red Almacenamiento no tiene autoarranque activado"
 echo "✅ Éxito: Autoarranque de Almacenamiento correcto."
 
 echo "✅ Red 'Almacenamiento' verificada correctamente."
@@ -142,12 +146,7 @@ check_ping() {
     fi
 }
 # HAY QUE CHECKEAR ESTO
-
-
 check_ping mvp5i1.vpd.com "" "mvp5i1.vpd.com"
-check_ping www.google.com enp1s0 "www.google.com desde mvp5i1.vpd.com"
-check_ping www.google.com enp8s0 "www.google.com desde mvp5i3.vpd.com"
-check_ping 10.22.122.1 enp7s0 "10.22.122.1 desde mvp5i2.vpd.com"
 
 #############################
 # VERIFICACIÓN VM CON VIRSH
@@ -164,6 +163,11 @@ if [ "$IP_PREFIX" = "10.192.140." ]; then
 else
   echo "ERROR: La interfaz enp8s0 NO tiene IP."
 fi
+
+check_ping www.google.com enp1s0 "www.google.com desde mvp5i1.vpd.com"
+check_ping www.google.com enp8s0 "www.google.com desde mvp5i3.vpd.com"
+check_ping 10.22.122.1 enp7s0 "10.22.122.1 desde mvp5i2.vpd.com"
+
 echo "Fin de comprobaciones."
 EOF
 
