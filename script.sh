@@ -10,7 +10,8 @@ VM_USER="root"  # <-- Cambia esto si el usuario SSH no es root
 
 xml="/etc/libvirt/qemu/mvp5.xml"
 virsh start mvp5
-sleep 30
+echo "Iniciando la máquina virtual 'mvp5', por favor, espere 40 segundos..."
+sleep 40
 
 # Función para mostrar errores
 error() {
