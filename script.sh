@@ -3,9 +3,10 @@
 # Rutas a los archivos XML
 XML_CLUSTER="/etc/libvirt/qemu/networks/Cluster.xml"
 XML_ALMACENAMIENTO="/etc/libvirt/qemu/networks/Almacenamiento.xml"
+
 # Nombre de la VM y usuario SSH
 VM_NAME="mvp5"
-VM_USER="root"  # <-- Cambia esto si el usuario SSH no es root
+VM_USER="root"
 
 xml="/etc/libvirt/qemu/mvp5.xml"
 
@@ -162,7 +163,7 @@ check_ping() {
     destino=$1
     interfaz=$2
     descripcion=$3
-    echo "Comprobando conexion de la máquina mvp5 de $3..."
+    echo "Comprobando conexión de la máquina mvp5 de $3..."
     if [ -n "$interfaz" ]; then
         salida_ping=$(ping -c 1 -W 1 -I "$interfaz" "$destino" 2>/dev/null)
     else
@@ -230,7 +231,7 @@ if [[ "$1" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
     # Copiar el script al remoto
     scp "$0" "$remote_host:/tmp/"
     if [ $? -ne 0 ]; then
-        echo "[ERROR] No se pudo copiar el script al anfitrión remoto"
+        echo "[ERROR] No se pudo copiar el script al anfitrión remoto" //TO DO otra vez habría que haber puesto lo del error aqui
         exit 1
     fi
 
@@ -240,6 +241,6 @@ if [[ "$1" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
 fi
 
 # Si el argumento no es válido
-echo "[ERROR] Argumento no reconocido: '$1'"
+echo "[ERROR] Argumento no reconocido: '$1'" //TO DO otra vez habría que haber puesto lo del error aqui
 echo "Uso: $0 [IP_remota] | local"
 exit 1
