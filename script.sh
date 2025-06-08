@@ -24,7 +24,7 @@ error() {
 #######################
 
 verificar_redes_y_vm() {
-virsh start mvp5
+virsh start mvp5 //Esto hay que ponerlo como en la P3, es decir, que compruebe si se esta ejecutando de antes, y entonces enciende y tal.
 echo "Iniciando la máquina virtual 'mvp5', por favor espere 40 segundos..."
 sleep 40
 
