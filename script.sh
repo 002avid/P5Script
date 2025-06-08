@@ -24,9 +24,15 @@ error() {
 #######################
 
 verificar_redes_y_vm() {
-virsh start mvp5 //Esto hay que ponerlo como en la P3, es decir, que compruebe si se esta ejecutando de antes, y entonces enciende y tal.
 echo "Iniciando la máquina virtual 'mvp5', por favor espere 40 segundos..."
-sleep 40
+estado_vm=$(virsh domstate mvp5 2>/dev/null)
+if [[ "$estado_vm" != "encendido" ]]; then
+    virsh start mvp5 &> /dev/null || error "No se pudo iniciar la máquina virtual mvp3"
+    sleep 40
+else
+    echo "ERROR: La máquina virtual mvp5 ya estaba encendida."
+fi
+
 
 echo "== Comprobando red: Cluster =="
 
