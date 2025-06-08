@@ -124,7 +124,6 @@ echo "✅ Red 'Almacenamiento' verificada correctamente."
 #############################
 echo "== Comprobación de conectividad =="
 
-# HAY QUE CHECKEAR ESTO
 check_ping() {
     destino=$1
     interfaz=$2
@@ -143,7 +142,6 @@ check_ping() {
         echo "✅ Éxito: Respuesta de $descripcion"
     fi
 }
-# HAY QUE CHECKEAR ESTO
 check_ping mvp5i1.vpd.com "" "mvp5i1.vpd.com"
 check_ping mvp5i2.vpd.com "" "mvp5i2.vpd.com"
 check_ping mvp5i3.vpd.com "" "mvp5i3.vpd.com"
