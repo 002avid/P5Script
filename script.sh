@@ -28,7 +28,7 @@ error_inicio() {
 # VERIFICACIÓN CLUSTER
 #######################
 
-script_p3() {
+script_p5() {
 echo "====Iniciando la máquina virtual 'mvp5', por favor espere 40 segundos...===="
 estado_vm=$(virsh domstate mvp5 2>/dev/null)
 if [[ "$estado_vm" != "encendido" ]]; then
@@ -228,7 +228,7 @@ exit 0
 if [ "$1" == "local" ]; then
     shift
     echo "====ÉXITO: Ejecutando comprobaciones en anfitrión local (modo remoto 'local')...===="
-    script_p3
+    script_p5
     exit 0
 fi
 
