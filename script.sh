@@ -38,41 +38,41 @@ echo "== Comprobando red: Cluster =="
 
 # Comprobar existencia del XML
 [ -f "$XML_CLUSTER" ] || error "No se encuentra el archivo Cluster.xml"
-echo "✅ Éxito: Red Cluster existe."
+echo "ÉXITO: Red Cluster existe."
 
 # Nombre de red
 nombre_cluster=$(cat  "$XML_CLUSTER"  |  tr  -s  ' '  |  grep  "<name>"  |  cut  -c  8-14)
 [ "$nombre_cluster" == "Cluster" ] || error "Nombre de red Cluster incorrecto: $nombre_cluster"
-echo "✅ Éxito: Nombre de red Cluster correcto."
+echo "ÉXITO: Nombre de red Cluster correcto."
 
 # Tipo de red
 tipo_cluster=$(cat  "$XML_CLUSTER"  |  tr  -s  ' '  |  grep  "<forward mode="  |  cut  -c  17-19)
 [ "$tipo_cluster" == "nat" ] || error "Tipo de red Cluster incorrecto: $tipo_cluster"
-echo "✅ Éxito: Tipo de red Cluster correcto."
+echo "ÉXITO: Tipo de red Cluster correcto."
 
 # IP base
 ip_cluster=$(cat  "$XML_CLUSTER"  |  tr  -s  ' '  |  grep  "<ip address="  |  cut  -c  15-27)
 [ "$ip_cluster" == "192.168.140.1" ] || error "IP base de Cluster incorrecta: $ip_cluster"
-echo "✅ Éxito: IP de Cluster correcta."
+echo "ÉXITO: IP de Cluster correcta."
 
 # Máscara de red
 netmask_cluster=$(cat  "$XML_CLUSTER"  |  tr  -s  ' '  |  grep  "netmask="  |  cut  -c  39-51)
 [ "$netmask_cluster" == "255.255.255.0" ] || error "Máscara de red de Cluster incorrecta: $netmask_cluster"
-echo "✅ Éxito: Máscara de red de Cluster correcta."
+echo "ÉXITO: Máscara de red de Cluster correcta."
 
 # Rango DHCP
 dhcp_start_cluster=$(cat  "$XML_CLUSTER"  |  tr  -s  ' '  |  grep  "<range start="  |  cut  -c  16-28)
 dhcp_end_cluster=$(cat  "$XML_CLUSTER"  |  tr  -s  ' '  |  grep  "<range start="  |  cut  -c  36-50)
 [ "$dhcp_start_cluster" == "192.168.140.2" ] || error "Inicio de DHCP incorrecto: $dhcp_start_cluster"
 [ "$dhcp_end_cluster" == "192.168.140.149" ] || error "Fin de DHCP incorrecto: $dhcp_end_cluster"
-echo "✅ Éxito: DHCP de Cluster correcto."
+echo "ÉXITO: DHCP de Cluster correcto."
 
 # Autoarranque
 autoinicio_cluster=$(virsh  net-info  Cluster  2>/dev/null  |  tr  -s  ' '  |  grep  "Autoinicio"  |  cut  -c  13-14)
 [ "$autoinicio_cluster" == "si" ] || error "La red Cluster no tiene autoarranque activado"
-echo "✅ Éxito: Autoarranque de Cluster correcto."
+echo "ÉXITO: Autoarranque de Cluster correcto."
 
-echo "✅ Red 'Cluster' verificada correctamente."
+echo "ÉXITO: Red 'Cluster' verificada correctamente."
 
 
 #############################
@@ -82,41 +82,41 @@ echo "== Comprobando red: Almacenamiento =="
 
 # Comprobar existencia del XML
 [ -f "$XML_ALMACENAMIENTO" ] || error "No se encuentra el archivo Almacenamiento.xml"
-echo "✅ Éxito: Red Almacenamiento existe."
+echo "ÉXITO Red Almacenamiento existe."
 
 # Nombre de red
 nombre_almacen=$(cat  "$XML_ALMACENAMIENTO"  |  tr  -s  ' '  |  grep  "<name>"  |  cut  -c  8-21)
 [ "$nombre_almacen" == "Almacenamiento" ] || error "Nombre de red Almacenamiento incorrecto: $nombre_almacen"
-echo "✅ Éxito: Nombre de red Almacenamiento correcto."
+echo "ÉXITO Nombre de red Almacenamiento correcto."
 
 # Tipo de red (debe ser none o no existir)
 tipo_almacen=$(cat  "$XML_ALMACENAMIENTO"  |  tr  -s  ' '  |  grep  "<forward mode="  |  cut  -c  17-20)
 if grep -q "<forward mode=" "$XML_ALMACENAMIENTO" && [ "$tipo_almacen" != "none" ]; then
     error "Tipo de red Almacenamiento incorrecto: $tipo_almacen"
 fi
-echo "✅ Éxito: Tipo de red Almacenamiento correcto."
+echo "ÉXITO Tipo de red Almacenamiento correcto."
 
 # IP base
 ip_almacen=$(cat  "$XML_ALMACENAMIENTO"  |  tr  -s  ' '  |  grep  "<ip address="  |  cut  -c  15-25)
 [ "$ip_almacen" == "10.22.122.1" ] || error "Dirección IP de Almacenamiento incorrecta: $ip_almacen"
-echo "✅ Éxito: IP de Almacenamiento correcta."
+echo "ÉXITO IP de Almacenamiento correcta."
 
 # Máscara de red
 netmask_almacen=$(cat  "$XML_ALMACENAMIENTO"  |  tr  -s  ' '  |  grep  "netmask="  |  cut  -c  37-49)
 [ "$netmask_almacen" == "255.255.255.0" ] || error "Máscara de red de Almacenamiento incorrecta: $netmask_almacen"
-echo "✅ Éxito: Máscara de red de Almacenamiento correcta."
+echo "ÉXITO Máscara de red de Almacenamiento correcta."
 
 # No debe haber DHCP
 dhcp_almacen=$(cat  "$XML_ALMACENAMIENTO"  |  tr  -s  ' '  |  grep  "<dhcp>")
 [  -z  "$dhcp_almacen"  ]  ||  error  "La  red  Almacenamiento  no  debe  tener  DHCP  activo"
-echo "✅ Éxito: DHCP desactivado en Almacenamiento."
+echo "ÉXITO DHCP desactivado en Almacenamiento."
 
 # Autoarranque
 autoinicio_almacen=$(virsh  net-info  Almacenamiento  2>/dev/null  |  tr  -s  ' '  |  grep  "Autoinicio"  |  cut  -c  13-14)
 [ "$autoinicio_almacen" == "si" ] || error "La red Almacenamiento no tiene autoarranque activado"
-echo "✅ Éxito: Autoarranque de Almacenamiento correcto."
+echo "ÉXITO Autoarranque de Almacenamiento correcto."
 
-echo "✅ Red 'Almacenamiento' verificada correctamente."
+echo "ÉXITO: Red 'Almacenamiento' verificada correctamente."
 
 
 #############################
@@ -139,7 +139,7 @@ check_ping() {
     if [ $? -ne 0 ]; then
         error "No se ha recibido respuesta de $descripcion"
     else
-        echo "✅ Éxito: Respuesta de $descripcion"
+        echo "ÉXITO Respuesta de $descripcion"
     fi
 }
 check_ping mvp5i1.vpd.com "" "mvp5i1.vpd.com"
@@ -175,7 +175,7 @@ check_ping() {
     fi
 
     if echo "$salida_ping" | grep -q "1 received" && ! echo "$salida_ping" | grep -qi "error";  then
-        echo "✅ Éxito: Respuesta de $descripcion"
+        echo "ÉXITO: Respuesta de $descripcion"
     else
         error "No se ha recibido respuesta de $descripcion"
     fi
@@ -202,11 +202,11 @@ EOF
 # COMPROBACIÓN XML DE VM
 #############################
 
-grep -q "<source network='Cluster'" "$xml" && echo "✅ Conectado a red Cluster" || echo "❌ La máquina mvp5 no esta conectada a red Cluster"
-grep -q "<source network='Almacenamiento'" "$xml" && echo "✅ Conectado a red Almacenamiento" || error "❌ La máquina mvp5 no esta conectada a red Almacenamiento"
+grep -q "<source network='Cluster'" "$xml" && echo "ÉXITO: Conectado a red Cluster" || echo "❌ La máquina mvp5 no esta conectada a red Cluster"
+grep -q "<source network='Almacenamiento'" "$xml" && echo "ÉXITO: Conectado a red Almacenamiento" || error "❌ La máquina mvp5 no esta conectada a red Almacenamiento"
 
 if grep -q "<source bridge='bridge0'" "$xml"; then
-    echo "✅ Conectado a bridge bridge0"
+    echo "ÉXITO: Conectado a bridge bridge0"
 elif grep -q "<source bridge=" "$xml"; then
     error "Nombre erróneo del bridge"
 else
@@ -222,7 +222,7 @@ exit 0
 # Si el primer argumento es "local", ejecutar directamente
 if [ "$1" == "local" ]; then
     shift
-    echo "✅ Ejecutando comprobaciones en anfitrión local (modo remoto 'local')..."
+    echo "ÉXITO: Ejecutando comprobaciones en anfitrión local (modo remoto 'local')..."
     verificar_redes_y_vm
     exit 0
 fi
