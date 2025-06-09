@@ -29,7 +29,7 @@ error_inicio() {
 #######################
 
 script_p3() {
-echo "Iniciando la máquina virtual 'mvp5', por favor espere 40 segundos..."
+echo "====Iniciando la máquina virtual 'mvp5', por favor espere 40 segundos...===="
 estado_vm=$(virsh domstate mvp5 2>/dev/null)
 if [[ "$estado_vm" != "encendido" ]]; then
     virsh start mvp5 &> /dev/null || error "No se pudo iniciar la máquina virtual mvp3"
@@ -83,7 +83,7 @@ echo "ÉXITO: Red 'Cluster' verificada correctamente."
 #############################
 # VERIFICACIÓN ALMACENAMIENTO
 #############################
-echo "== Comprobando red: Almacenamiento =="
+echo "==== Comprobando red: Almacenamiento ===="
 
 # Comprobar existencia del XML
 [ -f "$XML_ALMACENAMIENTO" ] || error "No se encuentra el archivo Almacenamiento.xml"
@@ -127,7 +127,7 @@ echo "ÉXITO: Red 'Almacenamiento' verificada correctamente."
 #############################
 # VERIFICACIÓN DE CONECTIVIDAD
 #############################
-echo "== Comprobación de conectividad =="
+echo "==== Comprobación de conectividad ===="
 
 check_ping() {
     destino=$1
@@ -172,7 +172,7 @@ check_ping() {
     destino=$1
     interfaz=$2
     descripcion=$3
-    echo "Comprobando conexión de la máquina mvp5 de $3..."
+    echo "====Comprobando conexión de la máquina mvp5 de $3...===="
     if [ -n "$interfaz" ]; then
         salida_ping=$(ping -c 1 -W 1 -I "$interfaz" "$destino" 2>/dev/null)
     else
@@ -188,10 +188,10 @@ check_ping() {
 
 
 
-echo "Comprobando conexión dentro de la VM..."
+echo "====Comprobando conexión dentro de la VM...===="
 IP_PREFIX=$(ip a show enp8s0 | grep 'inet ' | awk '{print $2}' | cut -d/ -f1 | cut -c 1-10)
 if [ "$IP_PREFIX" = "10.140.92." ]; then
-  echo "[OK] La interfaz enp8s0 tiene una IP asignada."
+  echo "ÉXITO: La interfaz enp8s0 tiene una IP asignada."
 else
   echo "ERROR: La interfaz enp8s0 NO tiene IP."
 fi
@@ -200,7 +200,7 @@ check_ping google.es enp1s0 "google.es desde mvp5i1.vpd.com"
 check_ping 10.22.122.1 enp7s0 "10.22.122.1 desde mvp5i2.vpd.com"
 check_ping google.es enp8s0 "google.es desde mvp5i3.vpd.com"
 
-echo "Fin de comprobaciones."
+echo "====Fin de comprobaciones.===="
 EOF
 
 #############################
@@ -227,7 +227,7 @@ exit 0
 # Si el primer argumento es "local", ejecutar directamente
 if [ "$1" == "local" ]; then
     shift
-    echo "ÉXITO: Ejecutando comprobaciones en anfitrión local (modo remoto 'local')..."
+    echo "====ÉXITO: Ejecutando comprobaciones en anfitrión local (modo remoto 'local')...===="
     script_p3
     exit 0
 fi
@@ -235,7 +235,7 @@ fi
 # Si se pasa una IP, ejecutar en remoto
 if [[ "$1" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
     remote_host="$1"
-    echo "Ejecutando comprobaciones en anfitrión remoto $remote_host..."
+    echo "====Ejecutando comprobaciones en anfitrión remoto $remote_host...===="
 
     # Copiar el script al remoto
     scp "$0" "$remote_host:/tmp/"
@@ -251,5 +251,5 @@ fi
 
 # Si el argumento no es válido
 error_inicio " Argumento no reconocido: '$1'"
-echo "Uso: $0 [IP_remota] | local"
+error_inicio "Uso: $0 [IP_remota] | local"
 exit 1
