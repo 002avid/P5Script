@@ -28,7 +28,7 @@ error_inicio() {
 # VERIFICACIÓN CLUSTER
 #######################
 
-verificar_redes_y_vm() {
+script_p3() {
 echo "Iniciando la máquina virtual 'mvp5', por favor espere 40 segundos..."
 estado_vm=$(virsh domstate mvp5 2>/dev/null)
 if [[ "$estado_vm" != "encendido" ]]; then
@@ -207,8 +207,8 @@ EOF
 # COMPROBACIÓN XML DE VM
 #############################
 
-grep -q "<source network='Cluster'" "$xml" && echo "ÉXITO: Conectado a red Cluster" || echo "❌ La máquina mvp5 no esta conectada a red Cluster"
-grep -q "<source network='Almacenamiento'" "$xml" && echo "ÉXITO: Conectado a red Almacenamiento" || error "❌ La máquina mvp5 no esta conectada a red Almacenamiento"
+grep -q "<source network='Cluster'" "$xml" && echo "ÉXITO: Conectado a red Cluster" || echo "La máquina mvp5 no esta conectada a red Cluster"
+grep -q "<source network='Almacenamiento'" "$xml" && echo "ÉXITO: Conectado a red Almacenamiento" || error "La máquina mvp5 no esta conectada a red Almacenamiento"
 
 if grep -q "<source bridge='bridge0'" "$xml"; then
     echo "ÉXITO: Conectado a bridge bridge0"
@@ -228,19 +228,19 @@ exit 0
 if [ "$1" == "local" ]; then
     shift
     echo "ÉXITO: Ejecutando comprobaciones en anfitrión local (modo remoto 'local')..."
-    verificar_redes_y_vm
+    script_p3
     exit 0
 fi
 
 # Si se pasa una IP, ejecutar en remoto
 if [[ "$1" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
     remote_host="$1"
-    echo "📡 Ejecutando comprobaciones en anfitrión remoto $remote_host..."
+    echo "Ejecutando comprobaciones en anfitrión remoto $remote_host..."
 
     # Copiar el script al remoto
     scp "$0" "$remote_host:/tmp/"
     if [ $? -ne 0 ]; then
-        echo "[ERROR] No se pudo copiar el script al anfitrión remoto" //TO DO otra vez habría que haber puesto lo del error aqui
+        error_inicio " No se pudo copiar el script al anfitrión remoto"
         exit 1
     fi
 
@@ -250,6 +250,6 @@ if [[ "$1" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
 fi
 
 # Si el argumento no es válido
-echo "[ERROR] Argumento no reconocido: '$1'" //TO DO otra vez habría que haber puesto lo del error aqui
+error_inicio " Argumento no reconocido: '$1'"
 echo "Uso: $0 [IP_remota] | local"
 exit 1
