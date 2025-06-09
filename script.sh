@@ -18,6 +18,11 @@ error() {
     exit 1
 }
 
+error_inicio() {
+    echo "ERROR: $1"
+    exit 1
+}
+
 
 #######################
 # VERIFICACIÓN CLUSTER
@@ -30,7 +35,7 @@ if [[ "$estado_vm" != "encendido" ]]; then
     virsh start mvp5 &> /dev/null || error "No se pudo iniciar la máquina virtual mvp3"
     sleep 40
 else
-    echo "ERROR: La máquina virtual mvp5 ya estaba encendida."
+    error_inicio "La máquina virtual mvp5 ya estaba encendida."
 fi
 
 
