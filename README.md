@@ -10,7 +10,7 @@ El script puede ejecutarse tanto en el anfitrión local como de forma remota sob
 
 ---
 
-## 🧰 Requisitos
+## Requisitos
 
 - Linux con `bash`, `virsh`, `ssh`, `scp`, `ping`
 - Una máquina virtual llamada `mvp5` definida en `libvirt`
@@ -21,7 +21,7 @@ El script puede ejecutarse tanto en el anfitrión local como de forma remota sob
 
 ---
 
-## 📁 Archivos XML esperados
+## Archivos XML esperados
 
 Por defecto, el script busca estos archivos:
 
@@ -33,7 +33,7 @@ Puedes editar el script si usas rutas o nombres distintos.
 
 ---
 
-## 🔍 ¿Qué verifica este script?
+## ¿Qué verifica este script?
 
 ### Red `Cluster`
 
@@ -74,7 +74,7 @@ Puedes editar el script si usas rutas o nombres distintos.
 
 ---
 
-## 🚀 Uso
+## Uso
 
 ### 1. En el anfitrión local
 
@@ -97,7 +97,7 @@ Se debe sustituir la dirección `192.168.1.100` por la que se desea realizar la 
 
 ---
 
-## 🛑 Errores comunes que detecta
+## Errores comunes que detecta
 
 - Archivos XML inexistentes
 - Configuraciones incorrectas
@@ -109,13 +109,13 @@ Se debe sustituir la dirección `192.168.1.100` por la que se desea realizar la 
 
 ---
 
-## 🧼 Limpieza automática
+## Limpieza automática
 
 Al finalizar, el script apaga la máquina virtual `mvp5` para no dejar recursos consumidos innecesariamente.
 
 ---
 
-## 👨‍💻 Autores
+## Autores
 
 - **[@002avid:https://github.com/002avid]** – Desarrollo y verificación del script  
 - **[@Putrici0:https://github.com/Putrici0]** – Desarrollo y verificación del script  
