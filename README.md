@@ -1,6 +1,6 @@
 # Verificador de redes Libvirt para entornos virtualizados
 
-Se ha realizado para un trabajo optativo de La asignatura *Virtualización y Procesamiento* Distribuido de la **Universidad de Las Palmas de Gran Canaria**. 
+Se ha realizado para el trabajo optativo de scripts de validación de la asignatura *Virtualización y Procesamiento* Distribuido de la **Universidad de Las Palmas de Gran Canaria**. 
 
 Especificamente para la verificación de la *Práctica 5: Infraestructura de red virtual*.
 
@@ -120,7 +120,3 @@ Al finalizar, el script apaga la máquina virtual `mvp5` para no dejar recursos 
 - **[@002avid:https://github.com/002avid]** – Desarrollo y verificación del script  
 - **[@Putrici0:https://github.com/Putrici0]** – Desarrollo y verificación del script  
 - **ULPGC/VPD** – Práctica de Virtualización y Procesamiento Distribuido
-
-Se ha realizado para un trabajo optativo de La asignatura *Virtualización y Procesamiento* Distribuido de la **Universidad de Las Palmas de Gran Canaria**. 
-
-Especificamente para la verificación de la *Práctica 5: Infraestructura de red virtual*.
