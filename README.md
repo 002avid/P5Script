@@ -93,7 +93,7 @@ Esto ejecuta todas las comprobaciones sobre la máquina local.
 ```
 Se debe sustituir la dirección `192.168.1.100` por la que se desea realizar la conexión.
 
-> Requiere acceso SSH sin contraseña (por ejemplo, con claves públicas).
+> Requiere acceso SSH sin contraseña (por ejemplo, con claves públicas), tanto entre sistemas anfitriones como con sus máquinas virtuales. 
 
 ---
 
