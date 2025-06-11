@@ -196,9 +196,14 @@ else
   echo "ERROR: La interfaz enp8s0 NO tiene IP."
 fi
 
-check_ping google.es enp1s0 "google.es desde mvp5i1.vpd.com"
-check_ping 10.22.122.1 enp7s0 "10.22.122.1 desde mvp5i2.vpd.com"
-check_ping google.es enp8s0 "google.es desde mvp5i3.vpd.com"
+ip_mvp5i1=$(ip a | grep 192.168.140. | tr -s ' ' | cut -d' ' -f10)
+check_ping google.es $mvp5i1 "google.es desde mvp5i1.vpd.com"
+
+ip_mvp5i2=$(ip a | grep 10.22.122. | tr -s ' ' | cut -d' ' -f10)
+check_ping 10.22.122.1 $mvp5i2 "10.22.122.1 desde mvp5i2.vpd.com"
+
+ip_mvp5i3=$(ip a | grep 10.140.92. | tr -s ' ' | cut -d' ' -f10)
+check_ping google.es $mvp5i3 "google.es desde mvp5i3.vpd.com"
 
 echo "====Fin de comprobaciones.===="
 EOF
