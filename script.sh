@@ -211,12 +211,17 @@ grep -q "<source network='Cluster'" "$xml" && echo "ÉXITO: Conectado a red Clus
 grep -q "<source network='Almacenamiento'" "$xml" && echo "ÉXITO: Conectado a red Almacenamiento" || error "La máquina mvp5 no esta conectada a red Almacenamiento"
 
 if grep -q "<source bridge='bridge0'" "$xml"; then
-    echo "ÉXITO: Conectado a bridge bridge0"
+    echo "ÉXITO: Conectado a bridge bridge0 mediante xml"
 elif grep -q "<source bridge=" "$xml"; then
     error "Nombre erróneo del bridge"
 else
-    error "No conectado a bridge bridge0"
+    error "No conectado a bridge bridge0, xml"
 fi
+
+if ip a | grep -q bridge0; then
+    echo "ÉXITO: Conectado a bridge bridge0 mediante ip"
+else
+    error "No conectaod a bridge bridge0, ip"
 
 virsh shutdown mvp5
 exit 0
