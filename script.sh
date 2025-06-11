@@ -32,7 +32,7 @@ script_p5() {
 echo "====Iniciando la máquina virtual 'mvp5', por favor espere 40 segundos...===="
 estado_vm=$(virsh domstate mvp5 2>/dev/null)
 if [[ "$estado_vm" != "encendido" ]]; then
-    virsh start mvp5 &> /dev/null || error "No se pudo iniciar la máquina virtual mvp3"
+    virsh start mvp5 &> /dev/null || error "No se pudo iniciar la máquina virtual mvp5"
     sleep 40
 else
     error_inicio "La máquina virtual mvp5 ya estaba encendida."
